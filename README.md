@@ -30,26 +30,25 @@ php extension for spam word filter based on Double-Array Trie tree, it can detec
 然后修改php.ini，增加一行：extension=trie_filter.so，然后重启PHP。
 
 ## 使用示例
-{% highlight php %}
-<?php
-$arrWord = array('word1', 'word2', 'word3');
-$resTrie = trie_filter_new(); //create an empty trie tree
-foreach ($arrWord as $v) {
-    trie_filter_store($resTrie, $v);
-}
-trie_filter_save($resTrie, __DIR__ . '/blackword.tree');
+	<?php
+	$arrWord = array('word1', 'word2', 'word3');
+	$resTrie = trie_filter_new(); //create an empty trie tree
+	foreach ($arrWord as $v) {
+    	trie_filter_store($resTrie, $v);
+	}
+	trie_filter_save($resTrie, __DIR__ . '/blackword.tree');
 
-$resTrie = trie_filter_load(__DIR__ . '/blackword.tree');
+	$resTrie = trie_filter_load(__DIR__ . '/blackword.tree');
 
-$arrRet = trie_filter_search($resTrie, 'hello word2');
-print_r($arrRet); //Array(0 => 6, 1 => 5)
-echo substr('hello word2', $arrRet[0], $arrRet[1]); //word2
+	$arrRet = trie_filter_search($resTrie, 'hello word2');
+	print_r($arrRet); //Array(0 => 6, 1 => 5)
+	echo substr('hello word2', $arrRet[0], $arrRet[1]); //word2
 
-$arrRet = trie_filter_search($resTrie, 'hello word');
-print_r($arrRet); //Array()
+	$arrRet = trie_filter_search($resTrie, 'hello word');
+	print_r($arrRet); //Array()
 
-trie_filter_free($resTrie);
-{% endhighlight %}
+	trie_filter_free($resTrie);
+
 # PHP版本
 
 PHP 5.2 or later.
