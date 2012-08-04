@@ -113,7 +113,7 @@ PHP_MINFO_FUNCTION(trie_filter)
 }
 /* }}} */
 
-/* {{{ proto array trie_filter_load(string dict_file_path)
+/* {{{ proto resource trie_filter_load(string dict_file_path)
    Returns resource id, or NULL on error*/
 PHP_FUNCTION(trie_filter_load)
 {
@@ -225,7 +225,7 @@ PHP_FUNCTION(trie_filter_search)
 }
 /* }}} */
 
-/* {{{ proto array trie_filter_new()
+/* {{{ proto resource trie_filter_new()
    Returns resource id, or NULL on error*/
 PHP_FUNCTION(trie_filter_new)
 {
@@ -254,7 +254,7 @@ PHP_FUNCTION(trie_filter_new)
 /* }}} */
 
 #define KEYWORD_MAX_LEN 1024
-/* {{{ proto array trie_filter_store(int trie_tree_identifier, string keyword)
+/* {{{ proto bool trie_filter_store(int trie_tree_identifier, string keyword)
    Returns true, or false on error*/
 PHP_FUNCTION(trie_filter_store)
 {
@@ -287,7 +287,7 @@ PHP_FUNCTION(trie_filter_store)
 }
 /* }}} */
 
-/* {{{ proto array trie_filter_save(int trie_tree_identifier, string dict_path)
+/* {{{ proto bool trie_filter_save(int trie_tree_identifier, string dict_path)
    Returns true, or false on error*/
 PHP_FUNCTION(trie_filter_save)
 {
@@ -312,7 +312,7 @@ PHP_FUNCTION(trie_filter_save)
 }
 /* }}} */
 
-/* {{{ proto array trie_filter_free(int trie_tree_identifier)
+/* {{{ proto bool trie_filter_free(int trie_tree_identifier)
    Returns true, or false on error*/
 PHP_FUNCTION(trie_filter_free)
 {
