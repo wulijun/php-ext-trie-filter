@@ -5,6 +5,12 @@ php extension for spam word filter based on Double-Array Trie tree, it can detec
 
 关键词过滤扩展，用于检查一段文本中是否出现敏感词，基于Double-Array Trie 树实现。
 
+## 升级历史
+
+### 2013-05-04
+1.	每个word可以附加一个int32类型的私有值，在trie_filter_search/trie_filter_search_all的返回值中，该私有值和word一起返回
+2.	新增trie_filter_search_all，一次返回所有的命中词，注意第二个词是从第一个词之后开始查找。
+
 ## 依赖库
 
 [libdatrie-0.2.4 or later](http://linux.thai.net/~thep/datrie/datrie.html)
@@ -33,16 +39,20 @@ php extension for spam word filter based on Double-Array Trie tree, it can detec
 	<?php
 	$arrWord = array('word1', 'word2', 'word3');
 	$resTrie = trie_filter_new(); //create an empty trie tree
-	foreach ($arrWord as $v) {
-    	trie_filter_store($resTrie, $v);
+	foreach ($arrWord as $k => $v) {
+    	trie_filter_store($resTrie, $v, $k + 1);
 	}
 	trie_filter_save($resTrie, __DIR__ . '/blackword.tree');
 
 	$resTrie = trie_filter_load(__DIR__ . '/blackword.tree');
 
-	$arrRet = trie_filter_search($resTrie, 'hello word2');
-	print_r($arrRet); //Array(0 => 6, 1 => 5)
-	echo substr('hello word2', $arrRet[0], $arrRet[1]); //word2
+	$strContent = 'hello word2 word1';
+	$arrRet = trie_filter_search($resTrie, $strContent);
+	print_r($arrRet); //Array(0 => 6, 1 => 5, 2 => 2)
+	echo substr($strContent, $arrRet[0], $arrRet[1]); //word2
+	$arrRet = trie_filter_search_all($resTrie, $strContent);
+	print_r($arrRet); //Array(0 => Array(0 => 6, 1 => 5, 2 => 2), 1 => Array(0 => 12, 1 => 5, 2 => 1))
+	
 
 	$arrRet = trie_filter_search($resTrie, 'hello word');
 	print_r($arrRet); //Array()

@@ -270,7 +270,7 @@ PHP_FUNCTION(trie_filter_search)
 }
 /* }}} */
 
-/* {{{ proto array trie_filter_search(int trie_tree_identifier, string centent)
+/* {{{ proto array trie_filter_search_all(int trie_tree_identifier, string centent)
    Returns info about all keywords, or false on error*/
 PHP_FUNCTION(trie_filter_search_all)
 {
