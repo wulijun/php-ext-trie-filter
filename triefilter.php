@@ -20,7 +20,7 @@ function trie_filter_load($strDictFile) {
  * 
  * @param resource $resTree
  * @param string $strContent
- * @return array spam word info, like Array(0 => start position, 1 => spam word len, 2 => user data attached to this spam word), if no one found, return empty array, false on error.
+ * @return array spam word info, like Array(0 => start position, 1 => spam word len), if no one found, return empty array, false on error.
  * @example
  * <pre>
  * $arrSpamWord = trie_filter_search($resTree, $strContent);
@@ -38,7 +38,7 @@ function trie_filter_search($resTree, $strContent) {
  * 
  * @param resource $resTree
  * @param string $strContent
- * @return array spam word info, like Array(Array(0 => start position, 1 => spam word len, 2 => user data attached to this spam word)), if no one found, return empty array, false on error.
+ * @return array spam word info, like Array(Array(0 => start position, 1 => spam word len)), if no one found, return empty array, false on error.
  * @example
  * <pre>
  * $arrSpamWord = trie_filter_search_all($resTree, $strContent);
@@ -67,10 +67,9 @@ function trie_filter_new() {
  * 
  * @param resource $resTree
  * @param string $strWord
- * @param int $intAttachedData optional, will be returned in trie_filter_search or trie_filter_search_all results
  * @return bool true on success or false on error.
  */
-function trie_filter_store($resTree, $strWord, [$intAttachedData = -1]) {
+function trie_filter_store($resTree, $strWord) {
 
 }
 

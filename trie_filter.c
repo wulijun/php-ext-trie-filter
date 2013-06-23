@@ -138,7 +138,7 @@ PHP_FUNCTION(trie_filter_load)
 }
 /* }}} */
 
-static int trie_search_one(Trie *trie, const AlphaChar *text, int *offset, TrieData *length, TrieData *data)
+static int trie_search_one(Trie *trie, const AlphaChar *text, int *offset, TrieData *length)
 {
 	TrieState *s;
 	const AlphaChar *p;
@@ -165,7 +165,6 @@ static int trie_search_one(Trie *trie, const AlphaChar *text, int *offset, TrieD
 		if (trie_state_is_terminal(s)) {
 			*offset = text - base;
 			*length = p - text;
-            *data = trie_state_get_data(s);
             trie_state_free(s);
             
 			return 1;
@@ -191,31 +190,27 @@ static int trie_search_all(Trie *trie, const AlphaChar *text, zval *data)
         return -1;
     }
 
-	while (*text) {		
-		p = text;
-		if (! trie_state_is_walkable(s, *p)) {
+    while (*text) {   
+        p = text;
+        if(! trie_state_is_walkable(s, *p)) {
             trie_state_rewind(s);
-			text++;
-			continue;
-		} else {
-			trie_state_walk(s, *p++);
+            text++;
+            continue;
         }
 
-		while (trie_state_is_walkable(s, *p) && ! trie_state_is_terminal(s))
-			trie_state_walk(s, *p++);
-
-		if (trie_state_is_terminal(s)) {
-            MAKE_STD_ZVAL(word);
-            array_init_size(word, 3);
-            add_next_index_long(word, text - base);
-            add_next_index_long(word, p - text);
-            add_next_index_long(word, trie_state_get_data(s));
-            add_next_index_zval(data, word);
-		}
-
+        while(*p && trie_state_is_walkable(s, *p) && ! trie_state_is_leaf(s)) {
+            trie_state_walk(s, *p++);  
+            if (trie_state_is_terminal(s)) { 
+                MAKE_STD_ZVAL(word);
+                array_init_size(word, 3);
+                add_next_index_long(word, text - base);
+                add_next_index_long(word, p - text);
+                add_next_index_zval(data, word);        
+            }        
+        }
         trie_state_rewind(s);
-		text++;
-	}
+        text++;
+    }
     trie_state_free(s);
 
 	return 0;
@@ -231,7 +226,7 @@ PHP_FUNCTION(trie_filter_search)
 	int text_len;
 
 	int offset = -1, i, ret;
-    TrieData length = 0, keyword_data = -1;
+    TrieData length = 0;
 
 	AlphaChar *alpha_text;
 
@@ -257,13 +252,13 @@ PHP_FUNCTION(trie_filter_search)
 
 	alpha_text[text_len] = TRIE_CHAR_TERM;
 
-	ret = trie_search_one(trie, alpha_text, &offset, &length, &keyword_data);
+	ret = trie_search_one(trie, alpha_text, &offset, &length);
+    efree(alpha_text);
 	if (ret == 0) {
         return;
     } else if (ret == 1) {
 		add_next_index_long(return_value, offset);
 		add_next_index_long(return_value, length);
-        add_next_index_long(return_value, keyword_data);
 	} else {
         RETURN_FALSE;
     }
@@ -306,6 +301,7 @@ PHP_FUNCTION(trie_filter_search_all)
 	alpha_text[text_len] = TRIE_CHAR_TERM;
 
 	ret = trie_search_all(trie, alpha_text, return_value);
+    efree(alpha_text);
 	if (ret == 0) {
         return;
 	} else {
@@ -343,7 +339,7 @@ PHP_FUNCTION(trie_filter_new)
 /* }}} */
 
 #define KEYWORD_MAX_LEN 1024
-/* {{{ proto bool trie_filter_store(int trie_tree_identifier, string keyword, int data)
+/* {{{ proto bool trie_filter_store(int trie_tree_identifier, string keyword)
    Returns true, or false on error*/
 PHP_FUNCTION(trie_filter_store)
 {
@@ -351,11 +347,10 @@ PHP_FUNCTION(trie_filter_store)
 	zval *trie_resource;
 	unsigned char *keyword, *p;
 	int keyword_len, i;
-    long keyword_data = -1;
     AlphaChar alpha_key[KEYWORD_MAX_LEN+1];
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|l", 
-				&trie_resource, &keyword, &keyword_len, &keyword_data) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", 
+				&trie_resource, &keyword, &keyword_len) == FAILURE) {
 		RETURN_FALSE;
 	}
     if (keyword_len > KEYWORD_MAX_LEN || keyword_len < 1) {
@@ -370,7 +365,7 @@ PHP_FUNCTION(trie_filter_store)
         p++;
     }
     alpha_key[i] = TRIE_CHAR_TERM;
-    if (! trie_store(trie, alpha_key, keyword_data)) {
+    if (! trie_store(trie, alpha_key, -1)) {
         RETURN_FALSE;
     }
     RETURN_TRUE;
