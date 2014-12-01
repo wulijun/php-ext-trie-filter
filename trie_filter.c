@@ -244,7 +244,7 @@ PHP_FUNCTION(trie_filter_search)
 	ZEND_FETCH_RESOURCE(trie, Trie *, &trie_resource, -1, 
 			PHP_TRIE_FILTER_RES_NAME, le_trie_filter);
 
-	alpha_text = emalloc(sizeof(AlphaChar) * text_len + 1);
+	alpha_text = emalloc(sizeof(AlphaChar) * (text_len + 1));
 
 	for (i = 0; i < text_len; i++) {
 		alpha_text[i] = (AlphaChar) text[i];
@@ -292,7 +292,7 @@ PHP_FUNCTION(trie_filter_search_all)
 	ZEND_FETCH_RESOURCE(trie, Trie *, &trie_resource, -1, 
 			PHP_TRIE_FILTER_RES_NAME, le_trie_filter);
 
-	alpha_text = emalloc(sizeof(AlphaChar) * text_len + 1);
+	alpha_text = emalloc(sizeof(AlphaChar) * (text_len + 1));
 
 	for (i = 0; i < text_len; i++) {
 		alpha_text[i] = (AlphaChar) text[i];
