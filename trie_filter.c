@@ -427,7 +427,7 @@ PHP_FUNCTION(trie_filter_store)
         p++;
     }
     alpha_key[i] = TRIE_CHAR_TERM;
-    
+
     if (! trie_store(trie, alpha_key, -1)) {
         RETURN_FALSE;
     }
@@ -500,7 +500,7 @@ PHP_FUNCTION(trie_filter_free)
 #if PHP_MAJOR_VERSION < 7
     if (zend_list_delete(resource_id) == SUCCESS) {
 #else
-	if (zend_list_delete(Z_RES_P(trie_resource)) == SUCCESS) {
+	if (zend_list_close(Z_RES_P(trie_resource)) == SUCCESS) {
 #endif
         RETURN_TRUE;
     }
