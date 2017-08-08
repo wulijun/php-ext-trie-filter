@@ -7,8 +7,16 @@ php extension for spam word filter based on Double-Array Trie tree, it can detec
 
 ## 升级历史
 
+### 2017-08-08
+1. 同时支持php5&php7
+1. 新增方法:
+  1. trie_filter_read，从string中读取二进制字典数据
+  1. trie_filter_write，将当前对象导出成二进制string
+  1. trie_filter_delete，从当前对象中删除一个word
+
 ### 2013-06-23
-trie_filter_search_all，一次返回所有的命中词;修复内存泄露
+1. trie_filter_search_all，一次返回所有的命中词
+1. 修复内存泄露
 
 ## 依赖库
 
@@ -16,51 +24,53 @@ trie_filter_search_all，一次返回所有的命中词;修复内存泄露
 
 ## 安装步骤
 
-下面的$LIB_PATH为依赖库安装目录，$INSTALL_PHP_PATH为PHP5安装目录。
+下面的$LIB_PATH为依赖库安装目录，$INSTALL_PHP_PATH为PHP安装目录。
 
 ### 安装libdatrie
-    $ tar zxvf libdatrie-0.2.4.tar.gz
-    $ cd libdatrie-0.2.4
-    $ make clean
-    $ ./configure --prefix=$LIB_PATH
-    $ make
-    $ make install
-
-### 安装扩展   
-    $ $INSTALL_PHP_PATH/bin/phpize
-    $ ./configure --with-php-config=$INSTALL_PHP_PATH/bin/php-config --with-trie_filter=$LIB_PATH
-    $ make
-    $ make install
-
+```
+$ tar zxvf libdatrie-0.2.4.tar.gz
+$ cd libdatrie-0.2.4
+$ make clean
+$ ./configure --prefix=$LIB_PATH
+$ make
+$ make install
+```
+### 安装扩展
+```
+$ $INSTALL_PHP_PATH/bin/phpize
+$ ./configure --with-php-config=$INSTALL_PHP_PATH/bin/php-config --with-trie_filter=$LIB_PATH
+$ make
+$ make install
+```
 然后修改php.ini，增加一行：extension=trie_filter.so，然后重启PHP。
 
 ## 使用示例
-	<?php
-	$arrWord = array('word1', 'word2', 'word3');
-	$resTrie = trie_filter_new(); //create an empty trie tree
-	foreach ($arrWord as $k => $v) {
-    	trie_filter_store($resTrie, $v);
-	}
-	trie_filter_save($resTrie, __DIR__ . '/blackword.tree');
+```
+<?php
+$arrWord = array('word1', 'word2', 'word3');
+$resTrie = trie_filter_new(); //create an empty trie tree
+foreach ($arrWord as $k => $v) {
+    trie_filter_store($resTrie, $v);
+}
+trie_filter_save($resTrie, __DIR__ . '/blackword.tree');
 
-	$resTrie = trie_filter_load(__DIR__ . '/blackword.tree');
+$resTrie = trie_filter_load(__DIR__ . '/blackword.tree');
 
-	$strContent = 'hello word2 word1';
-	$arrRet = trie_filter_search($resTrie, $strContent);
-	print_r($arrRet); //Array(0 => 6, 1 => 5)
-	echo substr($strContent, $arrRet[0], $arrRet[1]); //word2
-	$arrRet = trie_filter_search_all($resTrie, $strContent);
-	print_r($arrRet); //Array(0 => Array(0 => 6, 1 => 5), 1 => Array(0 => 12, 1 => 5))
-	
+$strContent = 'hello word2 word1';
+$arrRet = trie_filter_search($resTrie, $strContent);
+print_r($arrRet); //Array(0 => 6, 1 => 5)
+echo substr($strContent, $arrRet[0], $arrRet[1]); //word2
+$arrRet = trie_filter_search_all($resTrie, $strContent);
+print_r($arrRet); //Array(0 => Array(0 => 6, 1 => 5), 1 => Array(0 => 12, 1 => 5))
 
-	$arrRet = trie_filter_search($resTrie, 'hello word');
-	print_r($arrRet); //Array()
+$arrRet = trie_filter_search($resTrie, 'hello word');
+print_r($arrRet); //Array()
 
-	trie_filter_free($resTrie);
-
+trie_filter_free($resTrie);
+```
 # PHP版本
 
-PHP 5.2 or later.
+PHP 5.2 ~ 7.1.
 
 Windows is not support until now.
 
