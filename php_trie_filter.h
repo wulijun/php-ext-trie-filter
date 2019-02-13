@@ -47,11 +47,14 @@ PHP_RSHUTDOWN_FUNCTION(trie_filter);
 PHP_MINFO_FUNCTION(trie_filter);
 
 PHP_FUNCTION(trie_filter_load);
+PHP_FUNCTION(trie_filter_read);
 PHP_FUNCTION(trie_filter_search);
 PHP_FUNCTION(trie_filter_search_all);
 PHP_FUNCTION(trie_filter_new);
 PHP_FUNCTION(trie_filter_store);
+PHP_FUNCTION(trie_filter_delete);
 PHP_FUNCTION(trie_filter_save);
+PHP_FUNCTION(trie_filter_write);
 PHP_FUNCTION(trie_filter_free);
 
 #ifdef ZTS
