@@ -196,7 +196,6 @@ static int trie_search_one(Trie *trie, const AlphaChar *text, int *offset, TrieD
             *offset = text - base;
             *length = p - text;
             trie_state_free(s);
-
             return 1;
         }
 
@@ -513,7 +512,7 @@ PHP_FUNCTION(trie_filter_save)
                 &trie_resource, &filename, &filename_len) == FAILURE) {
         RETURN_FALSE;
     }
-    if (filename_len < 1 || strlen(filename) != filename_len) {
+    if (filename_len < 1) {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "save path required");
         RETURN_FALSE;
     }
